@@ -1,0 +1,20 @@
+{
+  "name": "awasm-calculator",
+  "version": "0.0.1",
+  "description": "a-wasm-calculator",
+  "main": "index.js",
+  "scripts": {
+    "build": "make",
+    "start": "npx http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfakhrusy/awasm-calculator.git"
+  },
+  "author": "Muhamad Fakhrusy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mfakhrusy/awasm-calculator/issues"
+  },
+  "homepage": "https://github.com/mfakhrusy/awasm-calculator#readme"
+}
