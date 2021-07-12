@@ -1,3 +1,5 @@
 .vscode/
-index.js
-index.wasm
+src/cpp.js
+src/cpp.wasm
+
+## autotools
