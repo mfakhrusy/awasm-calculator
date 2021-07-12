@@ -22,6 +22,4 @@ I'm a software engineer, from Indonesia
 
 ## To Run
 
-1. autoreconf -i
-2. ./configure
-3. make all
+1. make
