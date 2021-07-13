@@ -42,6 +42,12 @@ void add_operator(std::string new_operator) {
   }
 }
 
+void remove_last_character() {
+  if (math_expression.length() > 0) {
+    math_expression.pop_back();
+  }
+}
+
 void clear_math_expression() {
   math_expression = "";
 }
@@ -54,5 +60,6 @@ EMSCRIPTEN_BINDINGS(my_module) {
   emscripten::function("get_math_expression", &get_math_expression);
   emscripten::function("add_number", &add_number);
   emscripten::function("add_operator", &add_operator);
+  emscripten::function("remove_last_character", &remove_last_character);
   emscripten::function("clear_math_expression", &clear_math_expression);
 };

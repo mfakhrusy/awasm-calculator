@@ -5,6 +5,7 @@ const initWasm = () => {
         const api = {
           addNumber: Module['add_number'],
           addOperator: Module['add_operator'],
+          removeLastCharacter: Module['remove_last_character'],
           clearMathExpression: Module['clear_math_expression'],
           getMathExpression: Module['get_math_expression'],
         };
@@ -12,6 +13,7 @@ const initWasm = () => {
         resolve({
           addNumber: api.addNumber,
           addOperator: api.addOperator,
+          removeLastCharacter: api.removeLastCharacter,
           clearMathExpression: api.clearMathExpression,
           getMathExpression: api.getMathExpression,
         });
@@ -32,7 +34,11 @@ const main = async () => {
   const calcScreenText = document.getElementById('calculator__screen-current-text');
 
   const setExpression = () => {
-    calcScreenText.innerText = api.getMathExpression();
+    const expr = api.getMathExpression();
+    // change / to ÷ with unicode
+    const innerText = expr.replaceAll('/', '\u00F7')
+
+    calcScreenText.innerText = innerText;
   };
 
   // define function for number buttons
@@ -53,17 +59,31 @@ const main = async () => {
   const subtractionNode = document.getElementById('calculator__subtraction');
 
   // define function for 4 operator above
-  const onClickOperatorButton = (e) => {
-    const content = getTextContent(e.target.textContent)
-    api.addOperator(content);
+  const onClickOperatorButton = (type) => {
+    switch (type) {
+      case 'division':
+        api.addOperator('/');
+        break;
+      case 'multiplication':
+        api.addOperator('x');
+        break;
+      case 'addition':
+        api.addOperator('+');
+        break;
+      case 'subtraction':
+        api.addOperator('-');
+        break;
+      default:
+        break;
+    }
 
     setExpression()
   };
 
-  divisionNode.addEventListener('click', onClickOperatorButton);
-  multiplicationNode.addEventListener('click', onClickOperatorButton);
-  additionNode.addEventListener('click', onClickOperatorButton);
-  subtractionNode.addEventListener('click', onClickOperatorButton);
+  divisionNode.addEventListener('click', () => onClickOperatorButton('division'));
+  multiplicationNode.addEventListener('click', () => onClickOperatorButton('multiplication'));
+  additionNode.addEventListener('click', () => onClickOperatorButton('addition'));
+  subtractionNode.addEventListener('click', () => onClickOperatorButton('subtraction'));
 
   // AC function (clear screen)
   const onClickClearButton = () => {
@@ -74,6 +94,18 @@ const main = async () => {
 
   const clearNode = document.getElementById('calculator__ac');
   clearNode.addEventListener('click', onClickClearButton);
+
+
+  // delete function
+
+  const onClickDelete = () => {
+    api.removeLastCharacter();
+
+    setExpression();
+  };
+
+  const delNode = document.getElementById('calculator__del');
+  delNode.addEventListener('click', onClickDelete);
 
 };
 
