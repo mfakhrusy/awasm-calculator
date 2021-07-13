@@ -16,4 +16,3 @@ EMSCRIPTEN_BINDINGS(my_module) {
   emscripten::function("add_number", &add_number);
   emscripten::function("get_math_expression", &get_math_expression);
 };
-
