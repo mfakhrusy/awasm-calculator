@@ -1,5 +1,4 @@
 .vscode/
 src/cpp.js
 src/cpp.wasm
-
-## autotools
+node_modules/
