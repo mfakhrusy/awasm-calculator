@@ -4,14 +4,84 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" href="src/index.css">
+  <link rel="stylesheet" type="text/css" href="src/index.css?version=4">
 
   <!-- import generated js file from wasm first in head -->
   <script src="src/cpp.js"></script>
 </head>
 
 <body>
-  <h1>hello world</h1>
+  <main>
+    <section id="calculator">
+      <div id="calculator__screen">
+        <p id="calculator__screen-current-text">
+
+        </p>
+      </div>
+      <div class="calculator__buttons">
+        <button class="button" id="calculator__ac">
+          AC
+        </button>
+        <button class="button" id="calculator__plus_minus">
+          &#xB1;
+        </button>
+        <button class="button" id="calculator__percentage">
+          %
+        </button>
+        <button class="button" id="calculator__division">
+          &#247;
+        </button>
+        <button class="button calculator__number">
+          7
+        </button>
+        <button class="button calculator__number">
+          8
+        </button>
+        <button class="button calculator__number">
+          9
+        </button>
+        <button class="button" id="calculator__multiplication">
+          &#215;
+        </button>
+        <button class="button calculator__number">
+          4
+        </button>
+        <button class="button calculator__number">
+          5
+        </button>
+        <button class="button calculator__number">
+          6
+        </button>
+        <button class="button" id="calculator__subtraction">
+          -
+        </button>
+        <button class="button calculator__number">
+          1
+        </button>
+        <button class="button calculator__number">
+          2
+        </button>
+        <button class="button calculator__number">
+          3
+        </button>
+        <button class="button" id="calculator__addition">
+          +
+        </button>
+        <button class="button calculator__number">
+          0
+        </button>
+        <button class="button" id="calculator__comma">
+          &#8226;
+        </button>
+        <button class="button" id="calculator__del">
+          del
+        </button>
+        <button class="button" id="calculator__equal">
+          &#61;
+        </button>
+      </div>
+    </section>
+  </main>
   <!-- import main js file -->
   <script src="src/index.js"></script>
 </body>

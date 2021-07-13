@@ -3,11 +3,13 @@ const initWasm = () => {
     new Promise((resolve, _reject) => {
       Module.onRuntimeInitialized = async _ => {
         const api = {
-          plusOne: Module.cwrap('plusOne', 'number', ['number'])
+          addNumber: Module['add_number'],
+          getMathExpression: Module['get_math_expression'],
         };
 
         resolve({
-          plusOne: api.plusOne,
+          addNumber: api.addNumber,
+          getMathExpression: api.getMathExpression,
         });
       }
     })
@@ -17,7 +19,22 @@ const initWasm = () => {
 const main = async () => {
   const api = await initWasm();
 
-  console.log(api.plusOne(4))
+  // get calculator button node
+  const numberButtons = document.getElementsByClassName('calculator__number');
+
+  // get calculator screen current text
+  const calcScreenText = document.getElementById('calculator__screen-current-text');
+
+  const onClick = (e) => {
+    const numberContent = e.target.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim()
+    api.addNumber(numberContent);
+    const mathExpression = api.getMathExpression();
+    calcScreenText.innerText = mathExpression;
+  };
+
+  for (let i = 0; i < numberButtons.length; i += 1) {
+    numberButtons[i].addEventListener('click', onClick)
+  }
 };
 
 main();

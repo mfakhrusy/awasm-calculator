@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "make",
-    "start": "npx http-server"
+    "start": "npx http-server -c-1 -p 8001"
   },
   "repository": {
     "type": "git",
