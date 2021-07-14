@@ -111,8 +111,9 @@ const main = async () => {
 
   const onClickEqual = () => {
     const result = api.getMathResult();
+    const resultText = ` = ${result}`;
 
-    console.log(result)
+    calcScreenText.append(resultText)
   };
 
   const equalNode = document.getElementById('calculator__equal');

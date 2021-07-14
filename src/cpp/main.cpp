@@ -159,30 +159,30 @@ vector<string> get_rpn(string math_expression) {
   return math_expr_rpn;
 }
 
-double calc_rpn(string math_expr_rpn) {
+double calc_rpn(vector<string> math_expr_rpn) {
   double result = 0;
-  while (math_expr_rpn.length() > 1) {
-    if (math_expr_rpn.length() == 3) {
-      double left_operand = std::stod(math_expr_rpn.substr(0, 1));
-      double right_operand = std::stod(math_expr_rpn.substr(1, 1));
-      OperatorType::Value op = OperatorType::from_string_to_operator(math_expr_rpn.substr(2, 1));
+  while (math_expr_rpn.size() > 1) {
+    if (math_expr_rpn.size() == 3) {
+      double left_operand = std::stod(math_expr_rpn[0]);
+      double right_operand = std::stod(math_expr_rpn[1]);
+      OperatorType::Value op = OperatorType::from_string_to_operator(math_expr_rpn[2]);
 
       result += OperatorType::execute_operation(left_operand, right_operand, op);
 
-      math_expr_rpn = "";
+      math_expr_rpn.clear();
     } else {
-      for (string::size_type i = 0; i < math_expr_rpn.length(); i++) {
-        OperatorType::Value tmp_op = OperatorType::from_string_to_operator(math_expr_rpn.substr(i, 1));
+      for (string::size_type i = 0; i < math_expr_rpn.size(); i++) {
+        OperatorType::Value tmp_op = OperatorType::from_string_to_operator(math_expr_rpn[i]);
         if (tmp_op != OperatorType::no_op) {
-          double left_operand = std::stod(math_expr_rpn.substr(i - 2, 1));
-          double right_operand = std::stod(math_expr_rpn.substr(i - 1, 1));
+          double left_operand = std::stod(math_expr_rpn[i - 2]);
+          double right_operand = std::stod(math_expr_rpn[i - 1]);
 
           double tmp_result = OperatorType::execute_operation(left_operand, right_operand, tmp_op);
 
           result += tmp_result;
 
-          math_expr_rpn.replace(i, 1, std::to_string(tmp_result));
-          math_expr_rpn.erase(i-2, 2);
+          math_expr_rpn[i] = std::to_string(tmp_result);
+          math_expr_rpn.erase(math_expr_rpn.begin() + i - 2, math_expr_rpn.begin() + i);
         }
       }
     }
@@ -204,11 +204,13 @@ string s = std::accumulate(std::begin(math_expr_rpn), std::end(math_expr_rpn), s
   
 
   // // calculate math expression from reverse polish notation
-  // double result = calc_rpn(math_expr_rpn);
+  double result = calc_rpn(math_expr_rpn);
+
+  printf("result %f\n", result);
 
   // math_expression = "";
 
-  return -99.99;
+  return result;
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {
