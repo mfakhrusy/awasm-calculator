@@ -1,9 +1,11 @@
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <string>
-#include <algorithm>
+#include <numeric>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 string math_expression = "";
 
@@ -96,28 +98,35 @@ string get_math_expression() {
 };
 
 // rpn stands for reverse polish notation
-string get_rpn(string math_expression) {
-  string math_expr_rpn;
-  string tmp_op_rpn;
+vector<string> get_rpn(string math_expression) {
+  vector<string> math_expr_rpn;
+  vector<string> tmp_op_rpn;
 
   while (math_expression.length() > 0) {
     string first_letter = math_expression.substr(0, 1);
     OperatorType::Value first_letter_op = OperatorType::from_string_to_operator(first_letter);
 
     if (first_letter_op == OperatorType::no_op) {
-      math_expr_rpn += first_letter;
+      // math_expr_rpn += first_letter;
+      math_expr_rpn.push_back(first_letter);
     } else {
       if (tmp_op_rpn.empty()) {
-        tmp_op_rpn += first_letter;
+        // tmp_op_rpn += first_letter;
+        tmp_op_rpn.push_back(first_letter);
       } else {
-        OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn.substr(tmp_op_rpn.length() - 1, 1));
+        // OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn.substr(tmp_op_rpn.length() - 1, 1));
+        OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn[tmp_op_rpn.size() - 1]);
         OperatorType::Value src = first_letter_op;
 
         if (OperatorType::is_operator_higher_precedence(src, target)) {
-          tmp_op_rpn += first_letter;
+          // tmp_op_rpn += first_letter;
+          tmp_op_rpn.push_back(first_letter);
         } else {
-          math_expr_rpn += tmp_op_rpn;
-          tmp_op_rpn = first_letter;
+          // math_expr_rpn += tmp_op_rpn;
+          math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
+          // tmp_op_rpn = first_letter;
+          tmp_op_rpn.clear();
+          tmp_op_rpn.push_back(first_letter);
         }
       }
     }
@@ -125,7 +134,8 @@ string get_rpn(string math_expression) {
     math_expression.erase(0, 1);
   }
 
-  math_expr_rpn += tmp_op_rpn;
+  // math_expr_rpn += tmp_op_rpn;
+  math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
 
   return math_expr_rpn;
 }
@@ -164,9 +174,15 @@ double calc_rpn(string math_expr_rpn) {
 
 double get_math_result() {
   // implement shunting yarn
-  string math_expr_rpn = get_rpn(math_expression);
+  vector<string> math_expr_rpn = get_rpn(math_expression);
+string s = std::accumulate(std::begin(math_expr_rpn), std::end(math_expr_rpn), string(),
+                                [](string &ss, string &s)
+                                {
+                                    return ss.empty() ? s : ss + "," + s;
+                                });
 
-  printf("math rpn %s\n", math_expr_rpn.c_str());
+  printf("math rpn %s | %lu\n", s.c_str(), math_expr_rpn.size());
+  
 
   // // calculate math expression from reverse polish notation
   // double result = calc_rpn(math_expr_rpn);
