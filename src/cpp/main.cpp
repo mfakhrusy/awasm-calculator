@@ -103,38 +103,57 @@ vector<string> get_rpn(string math_expression) {
   vector<string> tmp_op_rpn;
 
   while (math_expression.length() > 0) {
+
     string first_letter = math_expression.substr(0, 1);
     OperatorType::Value first_letter_op = OperatorType::from_string_to_operator(first_letter);
 
+    string first_expr = first_letter;
+
+    string::size_type next_expr_index = 1;
+
+    printf("test here\n");
+
     if (first_letter_op == OperatorType::no_op) {
-      // math_expr_rpn += first_letter;
-      math_expr_rpn.push_back(first_letter);
+      for (string::size_type i = next_expr_index; i < math_expression.length(); ++i) {
+        OperatorType::Value tmp = OperatorType::from_string_to_operator(math_expression.substr(i, 1));
+
+        if (tmp != OperatorType::no_op) {
+          next_expr_index = i;
+          first_expr = math_expression.substr(0, next_expr_index);
+          break;
+        }
+
+        if (i == math_expression.length() - 1) {
+          first_expr = math_expression;
+          break;
+        }
+      }
+
+      math_expr_rpn.push_back(first_expr);
     } else {
       if (tmp_op_rpn.empty()) {
-        // tmp_op_rpn += first_letter;
-        tmp_op_rpn.push_back(first_letter);
+        tmp_op_rpn.push_back(first_expr);
       } else {
-        // OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn.substr(tmp_op_rpn.length() - 1, 1));
         OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn[tmp_op_rpn.size() - 1]);
-        OperatorType::Value src = first_letter_op;
+        OperatorType::Value src = OperatorType::from_string_to_operator(first_expr);
 
         if (OperatorType::is_operator_higher_precedence(src, target)) {
-          // tmp_op_rpn += first_letter;
-          tmp_op_rpn.push_back(first_letter);
+          tmp_op_rpn.push_back(first_expr);
         } else {
-          // math_expr_rpn += tmp_op_rpn;
           math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
-          // tmp_op_rpn = first_letter;
           tmp_op_rpn.clear();
-          tmp_op_rpn.push_back(first_letter);
+          tmp_op_rpn.push_back(first_expr);
         }
       }
     }
 
-    math_expression.erase(0, 1);
+    if (first_expr == math_expression) {
+      math_expression = "";
+    } else {
+      math_expression.erase(0, next_expr_index);
+    }
   }
 
-  // math_expr_rpn += tmp_op_rpn;
   math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
 
   return math_expr_rpn;
