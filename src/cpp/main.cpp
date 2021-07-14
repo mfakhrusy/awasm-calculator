@@ -161,28 +161,29 @@ vector<string> get_rpn(string math_expression) {
 
 double calc_rpn(vector<string> math_expr_rpn) {
   double result = 0;
+
   while (math_expr_rpn.size() > 1) {
     if (math_expr_rpn.size() == 3) {
       double left_operand = std::stod(math_expr_rpn[0]);
       double right_operand = std::stod(math_expr_rpn[1]);
       OperatorType::Value op = OperatorType::from_string(math_expr_rpn[2]);
 
-      result += OperatorType::execute_operation(left_operand, right_operand, op);
+      result = OperatorType::execute_operation(left_operand, right_operand, op);
 
       math_expr_rpn.clear();
     } else {
       for (string::size_type i = 0; i < math_expr_rpn.size(); i++) {
         OperatorType::Value tmp_op = OperatorType::from_string(math_expr_rpn[i]);
+
         if (tmp_op != OperatorType::no_op) {
           double left_operand = std::stod(math_expr_rpn[i - 2]);
           double right_operand = std::stod(math_expr_rpn[i - 1]);
 
           double tmp_result = OperatorType::execute_operation(left_operand, right_operand, tmp_op);
 
-          result += tmp_result;
-
           math_expr_rpn[i] = std::to_string(tmp_result);
           math_expr_rpn.erase(math_expr_rpn.begin() + i - 2, math_expr_rpn.begin() + i);
+          break;
         }
       }
     }
