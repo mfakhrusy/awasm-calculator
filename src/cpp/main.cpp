@@ -24,7 +24,7 @@ namespace OperatorType {
     no_op = 5,
   };
 
-  Value from_string_to_operator (string s_operator) {
+  Value from_string (string s_operator) {
     if (s_operator == string(1, '+')) {
       return add;
     } else if (s_operator == string(1, '-')) {
@@ -73,7 +73,7 @@ namespace OperatorType {
 
 void add_operator(string new_operator) {
   const string last_expression_string = string(1, math_expression[math_expression.length() - 1]);
-  const OperatorType::Value last_expression = OperatorType::from_string_to_operator(last_expression_string);
+  const OperatorType::Value last_expression = OperatorType::from_string(last_expression_string);
 
   if (last_expression == OperatorType::no_op) {
     math_expression += new_operator;
@@ -105,7 +105,7 @@ vector<string> get_rpn(string math_expression) {
   while (math_expression.length() > 0) {
 
     string first_letter = math_expression.substr(0, 1);
-    OperatorType::Value first_letter_op = OperatorType::from_string_to_operator(first_letter);
+    OperatorType::Value first_letter_op = OperatorType::from_string(first_letter);
 
     string first_expr = first_letter;
 
@@ -115,7 +115,7 @@ vector<string> get_rpn(string math_expression) {
 
     if (first_letter_op == OperatorType::no_op) {
       for (string::size_type i = next_expr_index; i < math_expression.length(); ++i) {
-        OperatorType::Value tmp = OperatorType::from_string_to_operator(math_expression.substr(i, 1));
+        OperatorType::Value tmp = OperatorType::from_string(math_expression.substr(i, 1));
 
         if (tmp != OperatorType::no_op) {
           next_expr_index = i;
@@ -134,8 +134,8 @@ vector<string> get_rpn(string math_expression) {
       if (tmp_op_rpn.empty()) {
         tmp_op_rpn.push_back(first_expr);
       } else {
-        OperatorType::Value target = OperatorType::from_string_to_operator(tmp_op_rpn[tmp_op_rpn.size() - 1]);
-        OperatorType::Value src = OperatorType::from_string_to_operator(first_expr);
+        OperatorType::Value target = OperatorType::from_string(tmp_op_rpn[tmp_op_rpn.size() - 1]);
+        OperatorType::Value src = OperatorType::from_string(first_expr);
 
         if (OperatorType::is_operator_higher_precedence(src, target)) {
           tmp_op_rpn.push_back(first_expr);
@@ -165,14 +165,14 @@ double calc_rpn(vector<string> math_expr_rpn) {
     if (math_expr_rpn.size() == 3) {
       double left_operand = std::stod(math_expr_rpn[0]);
       double right_operand = std::stod(math_expr_rpn[1]);
-      OperatorType::Value op = OperatorType::from_string_to_operator(math_expr_rpn[2]);
+      OperatorType::Value op = OperatorType::from_string(math_expr_rpn[2]);
 
       result += OperatorType::execute_operation(left_operand, right_operand, op);
 
       math_expr_rpn.clear();
     } else {
       for (string::size_type i = 0; i < math_expr_rpn.size(); i++) {
-        OperatorType::Value tmp_op = OperatorType::from_string_to_operator(math_expr_rpn[i]);
+        OperatorType::Value tmp_op = OperatorType::from_string(math_expr_rpn[i]);
         if (tmp_op != OperatorType::no_op) {
           double left_operand = std::stod(math_expr_rpn[i - 2]);
           double right_operand = std::stod(math_expr_rpn[i - 1]);
