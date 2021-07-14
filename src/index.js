@@ -8,6 +8,7 @@ const initWasm = () => {
           removeLastCharacter: Module['remove_last_character'],
           clearMathExpression: Module['clear_math_expression'],
           getMathExpression: Module['get_math_expression'],
+          getMathResult: Module['get_math_result'],
         };
 
         resolve({
@@ -16,6 +17,7 @@ const initWasm = () => {
           removeLastCharacter: api.removeLastCharacter,
           clearMathExpression: api.clearMathExpression,
           getMathExpression: api.getMathExpression,
+          getMathResult: api.getMathResult,
         });
       }
     })
@@ -106,6 +108,15 @@ const main = async () => {
 
   const delNode = document.getElementById('calculator__del');
   delNode.addEventListener('click', onClickDelete);
+
+  const onClickEqual = () => {
+    const result = api.getMathResult();
+
+    console.log(result)
+  };
+
+  const equalNode = document.getElementById('calculator__equal');
+  equalNode.addEventListener('click', onClickEqual);
 
 };
 
