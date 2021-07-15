@@ -1,8 +1,7 @@
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <string>
-#include <numeric>
-#include <vector>
+#include <cmath>
 
 using std::string;
 using std::vector;
@@ -43,12 +42,26 @@ namespace OperatorType {
       case no_op:
         return false;
       case multiply:
+        if (target == divide) {
+          return false;
+        } else {
+          return true;
+        }
       case divide:
         return true;
       case add:
-      case subtract:
-        if (target == subtract || target == add) {
+        if (target == subtract) {
+          return false;
+        } else if (target == add) {
           return true;
+        } else {
+          return false;
+        }
+      case subtract:
+        if (target == add) {
+          return true;
+        } else if (target == subtract) {
+          return false;
         } else {
           return false;
         }
@@ -111,8 +124,6 @@ vector<string> get_rpn(string math_expression) {
 
     string::size_type next_expr_index = 1;
 
-    printf("test here\n");
-
     if (first_letter_op == OperatorType::no_op) {
       for (string::size_type i = next_expr_index; i < math_expression.length(); ++i) {
         OperatorType::Value tmp = OperatorType::from_string(math_expression.substr(i, 1));
@@ -140,6 +151,8 @@ vector<string> get_rpn(string math_expression) {
         if (OperatorType::is_operator_higher_precedence(src, target)) {
           tmp_op_rpn.push_back(first_expr);
         } else {
+          std::reverse(tmp_op_rpn.begin(), tmp_op_rpn.end());
+
           math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
           tmp_op_rpn.clear();
           tmp_op_rpn.push_back(first_expr);
@@ -153,6 +166,8 @@ vector<string> get_rpn(string math_expression) {
       math_expression.erase(0, next_expr_index);
     }
   }
+
+  std::reverse(tmp_op_rpn.begin(), tmp_op_rpn.end());
 
   math_expr_rpn.insert(math_expr_rpn.end(), tmp_op_rpn.begin(), tmp_op_rpn.end());
 
@@ -195,21 +210,10 @@ double calc_rpn(vector<string> math_expr_rpn) {
 double get_math_result() {
   // implement shunting yarn
   vector<string> math_expr_rpn = get_rpn(math_expression);
-string s = std::accumulate(std::begin(math_expr_rpn), std::end(math_expr_rpn), string(),
-                                [](string &ss, string &s)
-                                {
-                                    return ss.empty() ? s : ss + "," + s;
-                                });
 
-  printf("math rpn %s | %lu\n", s.c_str(), math_expr_rpn.size());
-  
+  // calculate math expression from reverse polish notation
+  double result = std::ceil(calc_rpn(math_expr_rpn) * 1000.0) / 1000.0;
 
-  // // calculate math expression from reverse polish notation
-  double result = calc_rpn(math_expr_rpn);
-
-  printf("result %f\n", result);
-
-  // math_expression = "";
 
   return result;
 }
